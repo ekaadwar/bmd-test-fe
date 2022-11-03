@@ -1,4 +1,5 @@
 import React from "react";
+import qs from "query-string";
 import { connect } from "react-redux";
 import {
   ButtonAction,
@@ -27,18 +28,82 @@ import {
 } from "../components/Table";
 import Modal from "../components/Modal";
 import { InputModal } from "../components/Input";
+import { getData, deleteKelas } from "../redux/actions/kelas";
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       addModal: false,
+      data: [],
+      pageInfo: {},
+      nextPage: `${URL}/items?page=2`,
+      prevPage: null,
+      token: "",
+      params: {},
+      deleteModal: false,
+      deleteData: {},
     };
   }
 
-  componentDidUpdate() {
-    console.log("oke");
+  componentDidMount() {
+    const { token } = this.props.auth;
+    let params = {};
+    if (this.props.location.search) {
+      params = this.parseQuery(this.props.location.search);
+    }
+    this.getData(token, "", params);
   }
+
+  componentDidUpdate(prevProps) {
+    const { token } = this.props.auth;
+    const { params } = this.state;
+
+    if (prevProps.location.search !== this.props.location.search) {
+      this.props.getData(token, "", params).then(() => {
+        this.setState({
+          items: this.props.data.data,
+          pageInfo: this.props.data.pageInfo,
+          params,
+        });
+      });
+    }
+  }
+
+  getData = (token, page, params) => {
+    this.props.getData(token, page, params).then(() => {
+      this.setState({
+        data: this.props.kelas.data,
+        pageInfo: this.props.kelas.pageInfo,
+        token: this.props.auth.token,
+      });
+    });
+  };
+
+  parseQuery = (str) => {
+    return qs.parse(str.slice("1"));
+  };
+
+  onDelete = (id, name) => {
+    this.setState((prevState) => ({
+      ...prevState,
+      deleteData: {
+        ...prevState.deleteData,
+        id,
+        name,
+      },
+      deleteModal: true,
+    }));
+  };
+
+  deleteKelas = () => {
+    this.setState({ deleteModal: false });
+    this.props
+      .deleteKelas(this.state.deleteData.id, this.state.token)
+      .then(() => {
+        this.props.getData(this.state.token);
+      });
+  };
 
   getDetail = () => {
     this.props.history.push("/siswa");
@@ -87,7 +152,7 @@ class Home extends React.Component {
                 <th />
               </tr>
             </thead>
-            {kelas.data.map((row, idx) => (
+            {this.props.kelas.data.map((row, idx) => (
               <tbody key={idx} className="text-xs text-gray-700">
                 <tr>
                   {Object.values(row).map((item, id) => (
@@ -191,6 +256,26 @@ class Home extends React.Component {
             }
           />
         )}
+        {this.state.deleteModal === true && (
+          <Modal
+            setOpenModal={() => this.setState({ deleteModal: false })}
+            content={
+              <div>
+                <p className="align-center pb-5">
+                  Apakah Anda yakin ingin menghapus data{" "}
+                  {this.state.deleteData.name} ?
+                </p>
+                <div className="flex justify-end space-x-2">
+                  <ButtonAction
+                    onClick={() => this.setState({ deleteModal: false })}
+                    content={"Batal"}
+                  />
+                  <ButtonAction onClick={this.deleteKelas} content={"Ya"} />
+                </div>
+              </div>
+            }
+          />
+        )}
       </section>
     );
   }
@@ -198,8 +283,9 @@ class Home extends React.Component {
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
+  kelas: state.kelas,
 });
 
-const mapDispatchToProps = { authLogout };
+const mapDispatchToProps = { authLogout, getData, deleteKelas };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
