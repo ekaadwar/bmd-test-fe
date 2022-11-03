@@ -6,6 +6,7 @@ import PrivateRoute from "../components/PrivateRoute";
 import Home from "../pages/Home";
 import SignIn from "../pages/SignIn";
 import SignUp from "../pages/SignUp";
+import Siswa from "../pages/Siswa";
 
 const Routes = () => {
   return (
@@ -22,6 +23,10 @@ const Routes = () => {
       <Route
         path="/signup"
         render={(props) => <AuthRoute element={<SignUp {...props} />} />}
+      />
+      <Route
+        path="/siswa"
+        render={(props) => <AuthRoute element={<Siswa {...props} />} />}
       />
     </Switch>
   );

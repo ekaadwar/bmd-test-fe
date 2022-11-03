@@ -9,8 +9,12 @@ import {
 import { Container } from "../components/Container";
 import { TitlePage } from "../components/Title";
 import { authLogout } from "../redux/actions/auth";
-import { BsSearch as Search } from "react-icons/bs";
 import { FiEdit2 as Edit } from "react-icons/fi";
+import {
+  BiCaretLeft as Back,
+  BiCaretRight as Forward,
+  BiSearchAlt as Search,
+} from "react-icons/bi";
 import { kelas } from "../dummies";
 
 import { MdDeleteOutline as Delete } from "react-icons/md";
@@ -23,6 +27,10 @@ import {
 } from "../components/Table";
 
 class Home extends React.Component {
+  getDetail = () => {
+    this.props.history.push("/siswa");
+  };
+
   render() {
     return (
       <section className="pt-20">
@@ -47,62 +55,75 @@ class Home extends React.Component {
                   </button>
                 </div>
               </div>
+            </div>
+          }
+        />
 
-              <div className="overflow-x-auto">
-                <table className="table-data mx-auto text-xs">
-                  <thead>
-                    <tr className="text-sm">
-                      <FirstHeader text="No" />
-                      <Header text="Nama Kelas" />
-                      <Header text="Jumlah Siswa" />
-                      <Header text="Tahun Ajaran" />
-                      <LastHeader text="Status" />
-                      <th />
-                    </tr>
-                  </thead>
-                  {kelas.data.map((row, idx) => (
-                    <tbody key={idx} className="text-xs text-gray-700">
-                      <tr>
-                        {Object.values(row).map((item, id) => (
-                          <TableData
-                            key={id}
-                            column={Object.keys(row)[id]}
-                            isEven={idx % 2 === 0 && true}
-                            text={
-                              Object.keys(row)[id] === "id"
-                                ? (kelas.pageInfo.currentPage - 1) * 20 +
-                                  (idx + 1)
-                                : item
-                            }
-                          />
-                        ))}
-                        <td>
-                          <div className="flex flex-row w-full space-x-2 px-2 items-center justify-center">
-                            <ButtonAction
-                              onClick={() => this.onDelete(row.id, row.nama)}
-                              content={<Edit size={16} />}
-                            />
-                            <ButtonImportant
-                              value={row.id}
-                              content={<Search size={16} />}
-                              // onClick={this.getDetail}
-                            />
-                            <ButtonWarning
-                              onClick={() => this.onDelete(row.id, row.nama)}
-                              content={<Delete size={20} />}
-                            />
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
+        <div className="overflow-x-auto mt-5">
+          <table className="table-data mx-auto text-xs">
+            <thead>
+              <tr className="text-sm">
+                <FirstHeader text="No" />
+                <Header text="Nama Kelas" />
+                <Header text="Jumlah Siswa" />
+                <Header text="Tahun Ajaran" />
+                <LastHeader text="Status" />
+                <th />
+              </tr>
+            </thead>
+            {kelas.data.map((row, idx) => (
+              <tbody key={idx} className="text-xs text-gray-700">
+                <tr>
+                  {Object.values(row).map((item, id) => (
+                    <TableData
+                      key={id}
+                      column={Object.keys(row)[id]}
+                      isEven={idx % 2 === 0 && true}
+                      text={
+                        Object.keys(row)[id] === "id"
+                          ? (kelas.pageInfo.currentPage - 1) * 20 + (idx + 1)
+                          : item
+                      }
+                    />
                   ))}
-                  <tbody>
-                    <tr>
-                      <Footer colspan={5} />
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+                  <td>
+                    <div className="flex flex-row w-full space-x-2 px-2 items-center justify-center">
+                      <ButtonAction
+                        onClick={() => this.onDelete(row.id, row.nama)}
+                        content={<Edit size={16} />}
+                      />
+                      <ButtonImportant
+                        value={row.id}
+                        content={<Search size={16} />}
+                        onClick={this.getDetail}
+                      />
+                      <ButtonWarning
+                        onClick={() => this.onDelete(row.id, row.nama)}
+                        content={<Delete size={20} />}
+                      />
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            ))}
+            <tbody>
+              <tr>
+                <Footer colspan={5} />
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <Container
+          content={
+            <div className="flex flex-row items-center justify-center py-4">
+              <button className={"text-gray-800 cursor-default"}>
+                <Back size={24} />
+              </button>
+              <p>1</p>
+              <button className={"text-blue-900 cursor-pointer"}>
+                <Forward size={24} />
+              </button>
             </div>
           }
         />
