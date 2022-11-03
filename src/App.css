@@ -79,3 +79,7 @@
 .scrollbar-hidden::-webkit-scrollbar {
   width: 10px;
 }
+
+.table-data {
+  width: 1100px;
+}

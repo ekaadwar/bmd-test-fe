@@ -4,6 +4,10 @@ import { logo } from "../assets";
 import { InputAuth } from "../components/Input";
 
 class SignIn extends React.Component {
+  login = () => {
+    this.props.history.push("/");
+    console.log(this.props);
+  };
   render() {
     return (
       <div className="bg-auth h-screen w-full pt-16 ">
@@ -22,7 +26,10 @@ class SignIn extends React.Component {
                     Forgot Password?
                   </p>
                 </Link>
-                <button className="flex items-center justify-center bg-blue-500 h-10 text-white rounded-md px-3 active:bg-blue-700">
+                <button
+                  onClick={this.login}
+                  className="flex items-center justify-center bg-blue-500 h-10 text-white rounded-md px-3 active:bg-blue-700"
+                >
                   Log In
                 </button>
               </div>
