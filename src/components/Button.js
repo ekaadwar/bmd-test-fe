@@ -1,8 +1,11 @@
 import React from "react";
 
-export const ButtonPrimary = ({ text = "button" }) => {
+export const ButtonPrimary = ({ text = "button", onClick = () => {} }) => {
   return (
-    <button className="flex flex-row items-center justiry-center h-10 px-2 bg-blue-500 active:bg-blue-700 text-white text-sm rounded-md">
+    <button
+      className="flex flex-row items-center justiry-center h-10 px-2 bg-blue-500 active:bg-blue-700 text-white text-sm rounded-md"
+      onClick={onClick}
+    >
       {text}
     </button>
   );

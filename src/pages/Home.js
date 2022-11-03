@@ -7,7 +7,7 @@ import {
   ButtonPrimary,
 } from "../components/Button";
 import { Container } from "../components/Container";
-import { TitlePage } from "../components/Title";
+import { TitleModal, TitlePage } from "../components/Title";
 import { authLogout } from "../redux/actions/auth";
 import { FiEdit2 as Edit } from "react-icons/fi";
 import {
@@ -25,8 +25,21 @@ import {
   LastHeader,
   TableData,
 } from "../components/Table";
+import Modal from "../components/Modal";
+import { InputModal } from "../components/Input";
 
 class Home extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      addModal: false,
+    };
+  }
+
+  componentDidUpdate() {
+    console.log("oke");
+  }
+
   getDetail = () => {
     this.props.history.push("/siswa");
   };
@@ -40,7 +53,10 @@ class Home extends React.Component {
               <TitlePage text="Data Kelas" />
 
               <div className="flex flex-row space-x-2">
-                <ButtonPrimary text="Tambah Data" />
+                <ButtonPrimary
+                  onClick={() => this.setState({ addModal: true })}
+                  text="Tambah Data"
+                />
                 <ButtonPrimary text="Copy" />
                 <ButtonPrimary text="Excel" />
                 <ButtonPrimary text="PDF" />
@@ -127,6 +143,54 @@ class Home extends React.Component {
             </div>
           }
         />
+
+        {this.state.addModal && (
+          <Modal
+            setOpenModal={() => this.setState({ addModal: false })}
+            content={
+              <div className="space-y-10">
+                <TitleModal text="Tambah Data Kelas" />
+
+                <div className="grid grid-cols-2 gap-3">
+                  <InputModal label="Nama Kelas" />
+                  <InputModal label="Tahun Ajaran" />
+                  <InputModal label="Jenjang Kelas" />
+                  <div>
+                    <label className="text-sm text-gray-700">
+                      Status Kelas
+                    </label>
+                    <div className="flex items-center space-x-3 text-sm text-gray-700 mt-3">
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="radio"
+                          id="status"
+                          name="status"
+                          value="aktif"
+                        />
+                        <label htmlFor="html">Aktif</label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="radio"
+                          id="inaktif"
+                          name="status"
+                          value="tidak aktif"
+                        />
+                        <label htmlFor="inaktif">Tidak Aktif</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-row w-full space-x-2 items-center text-sm">
+                  <ButtonImportant content={<p>Tambah</p>} />
+                  <ButtonWarning content={<p>Reset</p>} />
+                  <ButtonAction content={<p>Kembali</p>} />
+                </div>
+              </div>
+            }
+          />
+        )}
       </section>
     );
   }

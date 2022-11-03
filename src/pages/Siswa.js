@@ -7,7 +7,7 @@ import {
   ButtonPrimary,
 } from "../components/Button";
 import { Container } from "../components/Container";
-import { TitlePage } from "../components/Title";
+import { TitleModal, TitlePage } from "../components/Title";
 import { authLogout } from "../redux/actions/auth";
 import { FiEdit2 as Edit } from "react-icons/fi";
 import { siswa } from "../dummies";
@@ -25,8 +25,16 @@ import {
   BiCaretRight as Forward,
   BiSearchAlt as Search,
 } from "react-icons/bi";
+import Modal from "../components/Modal";
+import { InputModal } from "../components/Input";
 
 class Siswa extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      addModal: false,
+    };
+  }
   render() {
     return (
       <section className="pt-20">
@@ -36,7 +44,10 @@ class Siswa extends React.Component {
               <TitlePage text="Data Siswa Kelas XX" />
 
               <div className="flex flex-row space-x-2">
-                <ButtonPrimary text="Tambah Data" />
+                <ButtonPrimary
+                  onClick={() => this.setState({ addModal: true })}
+                  text="Tambah Data"
+                />
                 <ButtonPrimary text="Copy" />
                 <ButtonPrimary text="Excel" />
                 <ButtonPrimary text="PDF" />
@@ -125,6 +136,57 @@ class Siswa extends React.Component {
             </div>
           }
         />
+
+        {this.state.addModal && (
+          <Modal
+            setOpenModal={() => this.setState({ addModal: false })}
+            content={
+              <div className="space-y-10">
+                <TitleModal text="Tambah Data Kelas" />
+
+                <div className="grid grid-cols-2 gap-3">
+                  <InputModal label="Nomor Induk Siswa (NIS)" />
+                  <InputModal label="Nama Ayah" />
+                  <InputModal label="Nama Siswa" />
+                  <InputModal label="Nama Ibu" />
+                  <InputModal label="Kelas Siswa" />
+                  <InputModal label="Alamat" />
+                  <div>
+                    <label className="text-sm text-gray-700">
+                      Janis Kelamin
+                    </label>
+                    <div className="flex items-center space-x-3 text-sm text-gray-700 mt-3">
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="radio"
+                          id="laki"
+                          name="jenisKelamin"
+                          value="Laki-laki"
+                        />
+                        <label htmlFor="laki">Laki-laki</label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="radio"
+                          id="perempuan"
+                          name="jenisKelamin"
+                          value="Perempuan"
+                        />
+                        <label htmlFor="perempuan">Perempuan</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-row w-full space-x-2 items-center text-sm">
+                  <ButtonImportant content={<p>Tambah</p>} />
+                  <ButtonWarning content={<p>Reset</p>} />
+                  <ButtonAction content={<p>Kembali</p>} />
+                </div>
+              </div>
+            }
+          />
+        )}
       </section>
     );
   }
