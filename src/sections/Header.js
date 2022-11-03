@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { Sling as Hamburger } from "hamburger-react";
 import { logoHorizontal } from "../assets";
 import { useHistory } from "react-router-dom";
+import { connect } from "react-redux";
 
-const Header = () => {
+const Header = (props) => {
   const [isOpen, setIsOpen] = useState(false);
   const history = useHistory();
   const home = () => {
@@ -15,15 +16,22 @@ const Header = () => {
         <div onClick={home} className="cursor-pointer">
           <img src={logoHorizontal} alt="Budi Mulia Dua School" />
         </div>
-        <Hamburger
-          toggled={isOpen}
-          toggle={() => setIsOpen(!isOpen)}
-          color="#0B86C9"
-          size={20}
-        />
+
+        {props.auth.token && (
+          <Hamburger
+            toggled={isOpen}
+            toggle={() => setIsOpen(!isOpen)}
+            color="#0B86C9"
+            size={20}
+          />
+        )}
       </div>
     </div>
   );
 };
 
-export default Header;
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+
+export default connect(mapStateToProps)(Header);

@@ -51,7 +51,7 @@ export const authSignin = (dataForm) => {
           msg: data.message,
         },
       });
-      dataForm.navigate.push("/profile");
+      dataForm.navigate.push("/");
 
       dispatch({ type: "SET_LOADING", payload: false });
       window.alert(data.message);

@@ -5,7 +5,7 @@ import Header from "../sections/Header";
 
 const PrivateRoute = ({ element, auth, priv = true }) => {
   if (priv !== false) {
-    if (auth.token === null) {
+    if (auth.token !== null) {
       return (
         <>
           <Header />
