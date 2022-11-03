@@ -119,7 +119,7 @@ class Home extends React.Component {
 
               <div className="flex flex-row space-x-2">
                 <ButtonPrimary
-                  onClick={() => this.setState({ addModal: true })}
+                  onClick={() => this.props.history.push("/add-kelas")}
                   text="Tambah Data"
                 />
                 <ButtonPrimary text="Copy" />

@@ -3,6 +3,41 @@ import http from "../../helpers/http";
 
 const { REACT_APP_BACKEND_URL: URL } = process.env;
 
+// ---------- create ----------
+// ---------- create ----------
+// ---------- create ----------
+
+export const addKelas = (formData, token, history) => {
+  return async (dispatch) => {
+    const form = new URLSearchParams();
+
+    form.append("nama", formData.nama);
+    form.append("jenjangKelas", formData.jenjangKelas);
+    form.append("tahunAjaran", formData.tahunAjaran);
+    form.append("status", formData.status);
+
+    dispatch({ type: "SET_LOADING", payload: true });
+    try {
+      const { data } = await http(token).post(`${URL}/kelas`, form.toString());
+      dispatch({
+        type: "KELAS_ADD",
+        payload: data.message,
+      });
+
+      history.push("/");
+      dispatch({ type: "SET_LOADING", payload: false });
+      window.alert(data.message);
+    } catch (error) {
+      dispatch({ type: "SET_LOADING", payload: false });
+      window.alert(error.response.data.message);
+    }
+  };
+};
+
+// ---------- read ----------
+// ---------- read ----------
+// ---------- read ----------
+
 export const getData =
   (token = null, targetPage = "", params = {}) =>
   async (dispatch) => {

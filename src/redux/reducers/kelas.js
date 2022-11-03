@@ -26,7 +26,7 @@ const kelas = (state = initialState, action) => {
         pageInfo: action.payload.pageInfo,
       };
     }
-    case "DATA_CLEAR": {
+    case "KELAS_CLEAR": {
       return {
         data: [],
         pageInfo: {},

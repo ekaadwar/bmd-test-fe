@@ -1,5 +1,6 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
+import AddKelas from "../components/AddKelas";
 import AuthRoute from "../components/AuthRoute";
 // import GeneralRoute from "../components/GeneralRoute";
 import PrivateRoute from "../components/PrivateRoute";
@@ -15,6 +16,11 @@ const Routes = () => {
         path="/"
         exact
         render={(props) => <PrivateRoute element={<Home {...props} />} />}
+      />
+      <Route
+        path="/add-kelas"
+        exact
+        render={(props) => <PrivateRoute element={<AddKelas {...props} />} />}
       />
       <Route
         path="/signin"

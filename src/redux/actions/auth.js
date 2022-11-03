@@ -69,5 +69,6 @@ export const authSignin = (dataForm) => {
 export const authLogout = () => {
   return (dispatch) => {
     dispatch({ type: "AUTH_CLEAR" });
+    dispatch({ type: "KELAS_CLEAR" });
   };
 };
