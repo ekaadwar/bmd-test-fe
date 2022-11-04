@@ -1,4 +1,5 @@
 import React from "react";
+import qs from "query-string";
 import { connect } from "react-redux";
 import {
   ButtonAction,
@@ -7,10 +8,9 @@ import {
   ButtonPrimary,
 } from "../components/Button";
 import { Container } from "../components/Container";
-import { TitleModal, TitlePage } from "../components/Title";
+import { TitlePage } from "../components/Title";
 import { authLogout } from "../redux/actions/auth";
 import { FiEdit2 as Edit } from "react-icons/fi";
-import { siswa } from "../dummies";
 
 import { MdDeleteOutline as Delete } from "react-icons/md";
 import {
@@ -26,15 +26,83 @@ import {
   BiSearchAlt as Search,
 } from "react-icons/bi";
 import Modal from "../components/Modal";
-import { InputModal } from "../components/Input";
+import { getSiswa, deleteSiswa } from "../redux/actions/siswa";
 
 class Siswa extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       addModal: false,
+      data: [],
+      pageInfo: {},
+      nextPage: `${URL}/items?page=2`,
+      prevPage: null,
+      token: "",
+      params: {},
+      deleteModal: false,
+      deleteData: {},
     };
   }
+
+  componentDidMount() {
+    const { token } = this.props.auth;
+    let params = {};
+    if (this.props.location.search) {
+      params = this.parseQuery(this.props.location.search);
+    }
+    this.getData(token, "", params);
+  }
+
+  componentDidUpdate(prevProps) {
+    const { token } = this.props.auth;
+    const { params } = this.state;
+
+    if (prevProps.location.search !== this.props.location.search) {
+      this.props.getSiswa(token, "", params).then(() => {
+        this.setState({
+          items: this.props.siswa.data,
+          pageInfo: this.props.siswa.pageInfo,
+          params,
+        });
+      });
+    }
+  }
+
+  getData = (token, page, params) => {
+    this.props.getSiswa(token, page, params).then(() => {
+      this.setState({
+        data: this.props.siswa.data,
+        pageInfo: this.props.siswa.pageInfo,
+        token: this.props.auth.token,
+      });
+    });
+  };
+
+  parseQuery = (str) => {
+    return qs.parse(str.slice("1"));
+  };
+
+  onDelete = (id, name) => {
+    this.setState((prevState) => ({
+      ...prevState,
+      deleteData: {
+        ...prevState.deleteData,
+        id,
+        name,
+      },
+      deleteModal: true,
+    }));
+  };
+
+  deleteKelas = () => {
+    this.setState({ deleteModal: false });
+    this.props
+      .deleteSiswa(this.state.deleteData.id, this.state.token)
+      .then(() => {
+        this.props.getSiswa(this.state.token);
+      });
+  };
+
   render() {
     return (
       <section className="pt-20">
@@ -80,31 +148,26 @@ class Siswa extends React.Component {
                 <th />
               </tr>
             </thead>
-            {siswa.data.map((row, idx) => (
+            {this.props.siswa.data.map((row, idx) => (
               <tbody key={idx} className="text-xs text-gray-700">
                 <tr>
-                  {Object.values(row).map((item, id) => (
-                    <TableData
-                      key={id}
-                      column={Object.keys(row)[id]}
-                      isEven={idx % 2 === 0 && true}
-                      text={
-                        Object.keys(row)[id] === "id"
-                          ? (siswa.pageInfo.currentPage - 1) * 20 + (idx + 1)
-                          : item
-                      }
-                    />
-                  ))}
+                  {Object.values(row).map(
+                    (item, id) =>
+                      Object.keys(row)[id] !== "id" && (
+                        <TableData
+                          key={id}
+                          column={Object.keys(row)[id]}
+                          isEven={idx % 2 === 0 && true}
+                          text={item}
+                        />
+                      )
+                  )}
                   <td>
                     <div className="flex flex-row w-full space-x-2 px-2 items-center justify-center">
-                      <ButtonAction
-                        onClick={() => this.onDelete(row.id, row.nama)}
-                        content={<Edit size={16} />}
-                      />
+                      <ButtonAction content={<Edit size={16} />} />
                       <ButtonImportant
                         value={row.id}
                         content={<Search size={16} />}
-                        // onClick={this.getDetail}
                       />
                       <ButtonWarning
                         onClick={() => this.onDelete(row.id, row.nama)}
@@ -137,51 +200,21 @@ class Siswa extends React.Component {
           }
         />
 
-        {this.state.addModal && (
+        {this.state.deleteModal === true && (
           <Modal
-            setOpenModal={() => this.setState({ addModal: false })}
+            setOpenModal={() => this.setState({ deleteModal: false })}
             content={
-              <div className="space-y-10">
-                <TitleModal text="Tambah Data Kelas" />
-
-                <div className="grid grid-cols-2 gap-3">
-                  <InputModal label="Nomor Induk Siswa (NIS)" />
-                  <InputModal label="Nama Ayah" />
-                  <InputModal label="Nama Siswa" />
-                  <InputModal label="Nama Ibu" />
-                  <InputModal label="Kelas Siswa" />
-                  <InputModal label="Alamat" />
-                  <div>
-                    <label className="text-sm text-gray-700">
-                      Janis Kelamin
-                    </label>
-                    <div className="flex items-center space-x-3 text-sm text-gray-700 mt-3">
-                      <div className="flex items-center space-x-2">
-                        <input
-                          type="radio"
-                          id="laki"
-                          name="jenisKelamin"
-                          value="Laki-laki"
-                        />
-                        <label htmlFor="laki">Laki-laki</label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <input
-                          type="radio"
-                          id="perempuan"
-                          name="jenisKelamin"
-                          value="Perempuan"
-                        />
-                        <label htmlFor="perempuan">Perempuan</label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex flex-row w-full space-x-2 items-center text-sm">
-                  <ButtonImportant content={<p>Tambah</p>} />
-                  <ButtonWarning content={<p>Reset</p>} />
-                  <ButtonAction content={<p>Kembali</p>} />
+              <div>
+                <p className="align-center pb-5">
+                  Apakah Anda yakin ingin menghapus data{" "}
+                  {this.state.deleteData.name} ?
+                </p>
+                <div className="flex justify-end space-x-2">
+                  <ButtonWarning
+                    onClick={() => this.setState({ deleteModal: false })}
+                    content={"Batal"}
+                  />
+                  <ButtonAction onClick={this.deleteKelas} content={"Ya"} />
                 </div>
               </div>
             }
@@ -194,8 +227,9 @@ class Siswa extends React.Component {
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
+  siswa: state.siswa,
 });
 
-const mapDispatchToProps = { authLogout };
+const mapDispatchToProps = { authLogout, getSiswa, deleteSiswa };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Siswa);

@@ -32,7 +32,7 @@ const Routes = () => {
       />
       <Route
         path="/siswa"
-        render={(props) => <AuthRoute element={<Siswa {...props} />} />}
+        render={(props) => <PrivateRoute element={<Siswa {...props} />} />}
       />
     </Switch>
   );

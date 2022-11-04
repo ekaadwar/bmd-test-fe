@@ -48,7 +48,7 @@ const Header = (props) => {
                 <Link to="/" onClick={() => setIsOpen(false)}>
                   Home
                 </Link>
-                <Link to="#" onClick={() => setIsOpen(false)}>
+                <Link to="/siswa" onClick={() => setIsOpen(false)}>
                   Data Siswa
                 </Link>
                 <button onClick={resLogout}>Keluar</button>

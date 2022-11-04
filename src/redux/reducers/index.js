@@ -4,6 +4,7 @@ import { persistReducer } from "redux-persist";
 
 import auth from "./auth";
 import kelas from "./kelas";
+import siswa from "./siswa";
 
 const persistAuth = {
   storage,
@@ -13,6 +14,7 @@ const persistAuth = {
 const reducer = combineReducers({
   auth: persistReducer(persistAuth, auth),
   kelas,
+  siswa,
 });
 
 export default reducer;

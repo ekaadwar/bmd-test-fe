@@ -170,7 +170,7 @@ class Home extends React.Component {
                   <td>
                     <div className="flex flex-row w-full space-x-2 px-2 items-center justify-center">
                       <ButtonAction
-                        onClick={() => this.onDelete(row.id, row.nama)}
+                        // onClick={() => this.onDelete(row.id, row.nama)}
                         content={<Edit size={16} />}
                       />
                       <ButtonImportant
@@ -266,7 +266,7 @@ class Home extends React.Component {
                   {this.state.deleteData.name} ?
                 </p>
                 <div className="flex justify-end space-x-2">
-                  <ButtonAction
+                  <ButtonWarning
                     onClick={() => this.setState({ deleteModal: false })}
                     content={"Batal"}
                   />
